@@ -1,0 +1,44 @@
+[
+    {
+        "story_id": "1",
+        "prompt": "A young wizard finds an ancient book in the library.",
+        "choices": [
+            {
+                "choice_id": "1A",
+                "text": "Open the book and start reading.",
+                "outcome": "The book glows, revealing a hidden map."
+            },
+            {
+                "choice_id": "1B",
+                "text": "Take the book to the headmaster.",
+                "outcome": "The headmaster recognizes it as a forbidden text."
+            },
+            {
+                "choice_id": "1C",
+                "text": "Look for hidden symbols on the book cover.",
+                "outcome": "A secret passage opens beneath the wizard’s feet."
+            }
+        ]
+    },
+    {
+        "story_id": "2",
+        "prompt": "A spaceship crashes in your backyard at midnight.",
+        "choices": [
+            {
+                "choice_id": "2A",
+                "text": "Investigate the crash site.",
+                "outcome": "You find an alien struggling to communicate."
+            },
+            {
+                "choice_id": "2B",
+                "text": "Call the authorities.",
+                "outcome": "Government agents arrive and take control."
+            },
+            {
+                "choice_id": "2C",
+                "text": "Ignore it and go to sleep.",
+                "outcome": "Strange noises wake you up at 3 AM."
+            }
+        ]
+    }
+]
