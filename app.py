@@ -11,8 +11,8 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Secure random secret key
 
 # Load GPT-Neo-125M model for generating choices
-MODEL_NAME = "distilgpt2"
-generator = pipeline("text-generation", model=MODEL_NAME,device=0)
+MODEL_NAME = "EleutherAI/gpt-neo-125M"
+generator = pipeline("text-generation", model=MODEL_NAME)
 
 # SQLite database file path
 DB_PATH = "story_database.db"
@@ -57,7 +57,7 @@ def generate_story(prompt):
     """
     response = generator(
         prompt,
-        max_new_tokens=20,
+        max_new_tokens=50,
         num_return_sequences=1,
         temperature=0.8,
         top_p=0.9,
