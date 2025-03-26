@@ -1,57 +1,37 @@
 import sqlite3
 
-def create_database():
-    conn = sqlite3.connect("story_database.db")
+DB_PATH = "story_database.db"
+
+def init_story_templates():
+    """Pre-populate the database with predefined story choices based on themes."""
+    stories = {
+        "magic": [
+            "A mysterious voice whispers a forgotten spell.",
+            "The wizard finds an ancient rune with hidden power.",
+            "The book glows, revealing a hidden world inside."
+        ],
+        "sci-fi": [
+            "The spaceship's AI wakes up and speaks for the first time.",
+            "A distress signal from deep space suddenly appears.",
+            "The scientist accidentally activates an alien artifact."
+        ],
+        "mystery": [
+            "A coded letter arrives at the detective’s desk.",
+            "A hidden door creaks open in the abandoned mansion.",
+            "The protagonist finds an old diary with missing pages."
+        ]
+    }
+
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Create stories table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS stories (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        prompt TEXT NOT NULL,
-        choice_1 TEXT NOT NULL,
-        choice_2 TEXT NOT NULL,
-        choice_3 TEXT NOT NULL,
-        outcome_1 TEXT NOT NULL,
-        outcome_2 TEXT NOT NULL,
-        outcome_3 TEXT NOT NULL
-    )
-    ''')
-
-    # Create user progress table
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS user_progress (
-        user_id TEXT PRIMARY KEY,
-        current_story_id INTEGER,
-        narrative TEXT
-    )
-    ''')
-
-    # Sample story prompts with choices
-    sample_stories = [
-        ("You find an ancient book in a library.", 
-         "Open the book.", "Give it to the librarian.", "Ignore it.",
-         "The book glows, revealing a hidden map.",
-         "The librarian warns you about the book's dark magic.",
-         "You leave it, but later, a shadowy figure takes it."),
-        
-        ("You discover a hidden cave while hiking.", 
-         "Enter the cave.", "Take a picture and leave.", "Call for help.",
-         "Inside, you find glowing crystals that hum with energy.",
-         "Your picture captures a mysterious silhouette in the darkness.",
-         "Rescuers find old carvings of an unknown civilization.")
-    ]
-
-    # Insert sample stories into the database
-    for story in sample_stories:
-        cursor.execute('''
-        INSERT INTO stories (prompt, choice_1, choice_2, choice_3, outcome_1, outcome_2, outcome_3)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        ''', story)
+    cursor.execute("DELETE FROM story_templates")  # Clear existing templates
+    for theme, options in stories.items():
+        for option in options:
+            cursor.execute("INSERT INTO story_templates (theme, text) VALUES (?, ?)", (theme, option))
 
     conn.commit()
     conn.close()
-    print("📚 Database created and populated successfully!")
 
-if __name__ == "__main__":
-    create_database()
+init_story_templates()
+print("Story templates initialized.")

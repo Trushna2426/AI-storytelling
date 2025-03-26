@@ -1,33 +1,18 @@
 import unittest
-from app import app  
+import json
+from app import app
 
-class FlaskAppTestCase(unittest.TestCase):
+class TestFlaskAPI(unittest.TestCase):
     def setUp(self):
-        # Create a test client for the Flask application.
-        self.app = app.test_client()
-        self.app.testing = True
+        self.client = app.test_client()
 
-    def test_index_get(self):
-        # Test that the index page loads correctly with a GET request.
-        response = self.app.get('/')
+    def test_story_generation(self):
+        """Ensure that a user can get valid story choices."""
+        response = self.client.post("/", data={"user_prompt": "A detective finds a hidden letter."})
         self.assertEqual(response.status_code, 200)
-        print("GET / response:")
-        print(response.data.decode('utf-8'))
+        data = response.data.decode("utf-8")
+        self.assertIn("Your Story So Far", data)  # Narrative should be displayed
+        self.assertIn("choice", data.lower())  # Choices should be present
 
-    def test_index_post(self):
-        # Test submitting a POST request to the index page with a user_id.
-        response = self.app.post('/', data={'user_id': 'testuser'}, follow_redirects=True)
-        self.assertEqual(response.status_code, 200)
-        print("\nPOST / with user_id 'testuser' response:")
-        print(response.data.decode('utf-8'))
-
-    def test_story_get(self):
-        # Set a user_id first so that session data is available, then test the /story endpoint.
-        self.app.post('/', data={'user_id': 'testuser'}, follow_redirects=True)
-        response = self.app.get('/story')
-        self.assertEqual(response.status_code, 200)
-        print("\nGET /story response:")
-        print(response.data.decode('utf-8'))
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

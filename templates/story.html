@@ -2,23 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Interactive Story</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story</title>
 </head>
 <body>
-    <h2>Your Story So Far</h2>
+    <h1>Your Story So Far</h1>
     <p>{{ narrative }}</p>
-    
-    <h3>What do you do next?</h3>
+
+    <h2>What happens next?</h2>
     <form action="/story" method="post">
+        <p>📖 <strong>Your Story So Far:</strong></p>
+        <p>{{ narrative }}</p>
+    
+        <p><strong>Choose what happens next:</strong></p>
         {% for choice in choices %}
-            <div>
-                <input type="radio" id="choice{{ loop.index }}" name="choice" value="{{ choice }}" required>
-                <label for="choice{{ loop.index }}">{{ choice }}</label>
-            </div>
+            <input type="radio" name="choice" value="{{ choice }}" required> {{ choice }} <br>
         {% endfor %}
+    
         <button type="submit">Continue Story</button>
     </form>
-    <br>
-    <a href="/ending">Finish Story</a>
+    
+    <!-- Display the story summary -->
+    <p>{{ summary }}</p>
+    
 </body>
 </html>
