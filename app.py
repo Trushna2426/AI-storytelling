@@ -11,9 +11,9 @@ hf_logging.set_verbosity_error()
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Secure random secret key
 
-# Load GPT-Neo-125M model for generating choices
-MODEL_NAME = "EleutherAI/gpt-neo-125M"
-generator = pipeline("text-generation", model=MODEL_NAME)
+# Load GPT2 model for generating choices
+MODEL_NAME = "gpt2"
+generator = pipeline("text-generation", model=MODEL_NAME, device=0)
 
 # SQLite database file path
 DB_PATH = "story_database.db"
