@@ -1,29 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Story</title>
+    <title>AI Storytelling</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .story-container { max-width: 600px; margin: auto; }
+        .choice-form { margin-top: 20px; }
+        .choice-btn { display: block; margin: 5px 0; padding: 10px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
+        .choice-btn:hover { background-color: #0056b3; }
+    </style>
 </head>
 <body>
-    <h1>Your Story So Far</h1>
-    <p>{{ narrative }}</p>
-
-    <h2>What happens next?</h2>
-    <form action="/story" method="post">
-        <p>📖 <strong>Your Story So Far:</strong></p>
+    <div class="story-container">
+        <h2>Your Story So Far:</h2>
         <p>{{ narrative }}</p>
-    
-        <p><strong>Choose what happens next:</strong></p>
-        {% for choice in choices %}
-            <input type="radio" name="choice" value="{{ choice }}" required> {{ choice }} <br>
-        {% endfor %}
-    
-        <button type="submit">Continue Story</button>
-    </form>
-    
-    <!-- Display the story summary -->
-    <p>{{ summary }}</p>
-    
+        
+        <h3>What happens next?</h3>
+        <form class="choice-form" action="/story" method="POST">
+            {% for choice in choices %}
+                <button type="submit" name="choice" value="{{ choice }}" class="choice-btn">{{ choice }}</button>
+            {% endfor %}
+        </form>
+    </div>
 </body>
 </html>
