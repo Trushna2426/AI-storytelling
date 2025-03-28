@@ -34,13 +34,17 @@ def init_db():
 
 init_db()
 
-def save_narrative(user_id, narrative):
-    """Save or update the narrative for a given user."""
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("REPLACE INTO stories (user_id, narrative) VALUES (?, ?)", (user_id, narrative))
-    conn.commit()
-    conn.close()
+def save_narrative(user_id, new_text):
+    """Append only new narrative text without duplicating choices."""
+    existing_narrative = get_narrative(user_id)
+    if not existing_narrative:
+        updated_narrative = new_text
+    else:
+        updated_narrative = existing_narrative + " " + new_text  # Append only new part
+
+    # Save the updated narrative
+    with open(f"narratives/{user_id}.txt", "w") as file:
+        file.write(updated_narrative)
 
 def get_narrative(user_id):
     """Retrieve the narrative for a given user."""
@@ -73,29 +77,41 @@ def enforce_theme_rules(theme, response):
     return "The story needs to follow the selected theme."
 
 def generate_choices(narrative):
-    """
-    Generate 3 unique, context-based choices based on the evolving story.
-    Ensures each choice continues the story logically.
-    """
-    base_prompt = narrative + "\nGenerate three unique and logical next steps in the story:"
-    choices = set()
+    """Generate three unique, logical next steps in the story based on user input."""
+    base_prompt = f"Continue the story logically:\n{narrative}\n\nGenerate three unique and logical next steps:"
     
-    while len(choices) < 3:
+    # Rule-based predefined templates for better choices
+    templates = [
+        "1️⃣ [Character] decides to {action}, leading to {consequence}.",
+        "2️⃣ A sudden {event} happens, forcing [Character] to {reaction}.",
+        "3️⃣ As [Character] moves forward, they encounter {obstacle}, which must be overcome."
+    ]
+    
+    # Ensure diverse, rule-based choices
+    choices = set()
+    attempts = 0
+    
+    while len(choices) < 3 and attempts < 5:
         response = generator(
             base_prompt,
             max_new_tokens=40,
             num_return_sequences=1,
-            temperature=0.9,
-            top_p=0.95,
+            temperature=0.8,
+            top_p=0.9,
             pad_token_id=generator.tokenizer.eos_token_id
         )
+        
+        # Extract only one logical step from the response
         choice_text = response[0]["generated_text"].strip()
         choice_sentence = choice_text.split(".")[0].strip()
+        
+        # Ensure choices are unique and not just repeating the input prompt
+        if choice_sentence not in choices and 10 < len(choice_sentence) < 100:
+            choices.add(choice_sentence)
+        
+        attempts += 1
 
-        if len(choice_sentence) > 10:  
-            choices.add(choice_sentence)  # Add only meaningful choices
-    
-    return list(choices)
+    return list(choices)[:3]  # Ensure exactly 3 choices
 
 def generate_summary(user_id):
     """
