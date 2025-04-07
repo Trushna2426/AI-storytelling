@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Storytelling</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .story-container { max-width: 600px; margin: auto; }
-        .choice-form { margin-top: 20px; }
-        .choice-btn { display: block; margin: 5px 0; padding: 10px; background-color: #007BFF; color: white; border: none; cursor: pointer; }
-        .choice-btn:hover { background-color: #0056b3; }
-    </style>
+    <meta charset="UTF-8">
+    <title>Your Interactive Story</title>
 </head>
 <body>
-    <div class="story-container">
-        <h2>Your Story So Far:</h2>
-        <p>{{ narrative }}</p>
-        
-        <h3>What happens next?</h3>
-        <form class="choice-form" action="/story" method="POST">
-            {% for choice in choices %}
-                <button type="submit" name="choice" value="{{ choice }}" class="choice-btn">{{ choice }}</button>
-            {% endfor %}
-        </form>
-    </div>
+    <h2>Your Story So Far</h2>
+    <p>{{ narrative }}</p>
+    
+    <h3>What do you do next?</h3>
+    <form action="/story" method="post"  action="{{ url_for('continue_story') }}">
+        {% for choice in choices %}
+            <div>
+                <input type="radio" id="choice{{ loop.index }}" name="choice" value="{{ choice }}" required>
+                <label for="choice{{ loop.index }}">{{ choice }}</label>
+            </div>
+        {% endfor %}
+        <button type="submit">Continue Story</button>
+    </form>
+    <br>
+    <form method="get" action="{{ url_for('ending') }}">
+        <button type="submit">End Story</button>
+      </form>
 </body>
 </html>
